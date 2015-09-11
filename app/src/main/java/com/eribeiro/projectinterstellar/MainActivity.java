@@ -1,17 +1,26 @@
 package com.eribeiro.projectinterstellar;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
+import com.eribeiro.projectinterstellar.model.Dado;
+import com.eribeiro.projectinterstellar.modelDAO.DadoDAO;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 
-public class MainActivity extends Activity implements QRCodeReaderView.OnQRCodeReadListener {
+public class MainActivity extends ActionBarActivity implements QRCodeReaderView.OnQRCodeReadListener {
 
     private TextView myTextView;
     private QRCodeReaderView mydecoderview;
@@ -33,6 +42,24 @@ public class MainActivity extends Activity implements QRCodeReaderView.OnQRCodeR
     @Override
     public void onQRCodeRead(String text, PointF[] points) {
         myTextView.setText(text);
+
+        String lnk = text;
+
+        Calendar calendar = Calendar.getInstance();
+        DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
+        String date = df.format(Calendar.getInstance().getTime());
+
+        Dado dado = new Dado(lnk, date, 0);
+
+        DadoDAO dadoDAO = new DadoDAO(getApplicationContext());
+        if (dadoDAO.insert(dado)) {
+
+            Toast.makeText(getApplicationContext(), "Cadastrado com sucesso!", Toast.LENGTH_SHORT).show();
+            myTextView.setText("Informe novo QRCode");
+
+        } else {
+            Toast.makeText(getApplicationContext(), "Algo deu errado :(", Toast.LENGTH_SHORT).show();
+        }
 
         Log.d("RESULTADO", text);
     }
@@ -81,7 +108,8 @@ public class MainActivity extends Activity implements QRCodeReaderView.OnQRCodeR
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(this, Listagem.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
