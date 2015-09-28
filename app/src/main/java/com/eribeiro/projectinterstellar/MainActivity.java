@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.dlazaro66.qrcodereaderview.QRCodeReaderView;
 import com.eribeiro.projectinterstellar.model.Dado;
 import com.eribeiro.projectinterstellar.modelDAO.DadoDAO;
+import com.eribeiro.projectinterstellar.serverconnection.HttpConnection;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -51,15 +52,17 @@ public class MainActivity extends ActionBarActivity implements QRCodeReaderView.
 
         Dado dado = new Dado(lnk, date, 0);
 
-        DadoDAO dadoDAO = new DadoDAO(getApplicationContext());
-        if (dadoDAO.insert(dado)) {
+        //DadoDAO dadoDAO = new DadoDAO(getApplicationContext());
+        //if (dadoDAO.insert(dado)) {
 
-            Toast.makeText(getApplicationContext(), "Cadastrado com sucesso!", Toast.LENGTH_SHORT).show();
-            myTextView.setText("Informe novo QRCode");
+          //  Toast.makeText(getApplicationContext(), "Cadastrado com sucesso!", Toast.LENGTH_SHORT).show();
+            //myTextView.setText("Informe novo QRCode");
 
-        } else {
-            Toast.makeText(getApplicationContext(), "Algo deu errado :(", Toast.LENGTH_SHORT).show();
-        }
+//        } else {
+  //          Toast.makeText(getApplicationContext(), "Algo deu errado :(", Toast.LENGTH_SHORT).show();
+        //}
+        Log.d("JSON", "INICIANDO FORMATACAO");
+        HttpConnection.sendJson(dado);
 
         Log.d("RESULTADO", text);
     }
